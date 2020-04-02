@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/geolocation": "^2.0.2",
+    "axios": "^0.19.2",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "socket.io-client": "^2.1.1"
