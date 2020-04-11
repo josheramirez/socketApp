@@ -45,6 +45,7 @@ export default class App extends React.Component{
     });
 
     this.state={
+      userId:1,
       data:null,
       initialPosition: 'unknown',
       lastPosition: 'unknown',
@@ -79,24 +80,27 @@ export default class App extends React.Component{
   }
 
   postUserDetails(userDetails){
-
-     console.log(userDetails);
-    // try {
-    // axios({
-    //   method: "put",
-    //   url: "http://192.168.0.13:8080/users",
-    //   data: userDetails,
-    //   config: { headers: { "Content-Type": "multipart/form-data" } }
-    // })
-    // .then(response => {
-    //   callback();
-    // })
-    // .catch(function(error) {
-    //   console.log("hay error en el catch de axios");
-    // });
-    // }catch(error){
-    //   console.log(err);
-    // }
+    // console.log("datos "+ JSON.stringify( userDetails.userId));
+    //  console.log("datos "+ JSON.stringify( userDetails));
+    let url="http://192.168.0.13:8080/users/"+userDetails.userId;
+    try {
+      axios({
+        method: "put",
+        url: url,
+        data: userDetails.coords,
+        config: { headers: { "Content-Type": "multipart/form-data" } }
+      })
+      .then(response => {
+        console.log("objeto actualizado");
+        // callback();
+      })
+      .catch(function(error) {
+        console.log(userDetails.coords,url);
+        console.log("hay error en el catch de axios");
+      });
+    }catch(error){
+      console.log(err);
+    }
   }
 
   watchID: ?number = null;
@@ -110,10 +114,14 @@ export default class App extends React.Component{
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
     this.watchID = Geolocation.watchPosition(position => {
+      // console.log(position.coords.latitude)
+      // console.log(position.coords.longitude)
+      position["userId"]=this.state.userId;
+      console.log(position)
       const lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
-      postUserDetails({"id":1,"password":"zerotraxu","latitude":this.state.location.latitude,"longitude":this.state.location.longitude})
-      console.log("ultima posicicon: "+this.state.lastPosition)
+       this.postUserDetails(position);
+      // console.log("ultima posicicon: "+this.state.lastPosition)
     });
   }
   
